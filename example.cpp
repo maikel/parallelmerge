@@ -6,7 +6,6 @@
 #include <string>
 #include <vector>
 
-#include "tbb_scheduler.hpp"
 #include "mergesort.hpp"
 
 #ifdef __cpp_lib_hardware_interference_size
@@ -17,12 +16,9 @@ constexpr std::size_t hardware_constructive_interference_size = 64;
 constexpr std::size_t hardware_destructive_interference_size = 64;
 #endif
 
-using mn::Merge;
-
 int main(int argc, char** argv) {
   std::vector<int> left = {1, 2, 2, 3, 6, 7, 9, 11, 13, 15, 16, 17, 19};
   std::vector<int> right = {2, 4, 6, 8, 10, 12, 13, 13, 14, 16};
-  std::vector<int> result(left.size() + right.size());
 
   std::size_t chunkSize = hardware_destructive_interference_size / sizeof(int);
   std::size_t nThreads = 1;
@@ -34,13 +30,18 @@ int main(int argc, char** argv) {
     std::size_t pos = 0;
     chunkSize = std::stoi(argv[2], &pos);
   }
+
+  std::vector<int> result_parallel(left.size() + right.size());
   exec::static_thread_pool context(nThreads);
   stdexec::scheduler auto scheduler = context.get_scheduler();
-  stdexec::sender auto merge = Merge(scheduler, left, right, result, chunkSize);
-  stdexec::sync_wait(merge);
+  stdexec::sync_wait(mn::Merge(scheduler, left, right, result_parallel, chunkSize));
 
-  assert(std::is_sorted(result.begin(), result.end()));
-  for (int x : result) {
+  std::vector<int> result_sequential(left.size() + right.size());
+  mn::Merge(left, right, result_sequential);
+
+  assert(std::is_sorted(result_parallel.begin(), result_parallel.end()));
+  assert(result_parallel == result_sequential);
+  for (int x : result_parallel) {
     std::cout << x << '\n';
   }
 }

@@ -87,18 +87,16 @@ auto Merge(Scheduler scheduler, L&& lhs, R&& rhs, O&& output, I chunkSize)
   auto out = std::span{output};
   std::integral auto nLeft = lhs.size() / chunkSize + (lhs.size() % chunkSize != 0);
   ex::sender auto leftRanking =
-      ex::schedule(scheduler) | ex::bulk(nLeft, [=](std::size_t i) noexcept {
+      ex::schedule(scheduler) | ex::bulk(nLeft, [=](std::integral auto i) noexcept {
         std::integral auto offset = i * chunkSize;
-        stdr::random_access_range auto needles =
-            stdr::views::drop(left, offset) | stdr::views::take(chunkSize);
+        std::span needles = stdr::views::drop(left, offset) | stdr::views::take(chunkSize);
         LowerRanking(needles, right, stdr::views::drop(out, offset));
       });
   std::integral auto nRight = rhs.size() / chunkSize + (rhs.size() % chunkSize != 0);
   ex::sender auto rightRanking =
-      ex::schedule(scheduler) | ex::bulk(nRight, [=](std::size_t i) noexcept {
+      ex::schedule(scheduler) | ex::bulk(nRight, [=](std::integral auto i) noexcept {
         std::integral auto offset = i * chunkSize;
-        stdr::random_access_range auto needles =
-            stdr::views::drop(right, offset) | stdr::views::take(chunkSize);
+        std::span needles = stdr::views::drop(right, offset) | stdr::views::take(chunkSize);
         UpperRanking(needles, left, stdr::views::drop(out, offset));
       });
   return ex::when_all(leftRanking, rightRanking);
