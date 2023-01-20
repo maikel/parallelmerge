@@ -1,5 +1,5 @@
-#ifndef MN_MERGESORT_HPP
-#define MN_MERGESORT_HPP
+#ifndef VEEAM_MERGESORT_HPP
+#define VEEAM_MERGESORT_HPP
 
 #include <stdexec/execution.hpp>
 
@@ -7,7 +7,7 @@
 #include <ranges>
 #include <span>
 
-namespace mn {
+namespace veeam {
 
 namespace ex = stdexec;
 namespace stdr = std::ranges;
@@ -102,6 +102,6 @@ auto Merge(Scheduler scheduler, L&& lhs, R&& rhs, O&& output, I chunkSize)
   return ex::when_all(leftRanking, rightRanking);
 }
 
-} // namespace mn
+} // namespace veeam
 
 #endif

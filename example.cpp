@@ -34,10 +34,10 @@ int main(int argc, char** argv) {
   std::vector<int> result_parallel(left.size() + right.size());
   exec::static_thread_pool context(nThreads);
   stdexec::scheduler auto scheduler = context.get_scheduler();
-  stdexec::sync_wait(mn::Merge(scheduler, left, right, result_parallel, chunkSize));
+  stdexec::sync_wait(veeam::Merge(scheduler, left, right, result_parallel, chunkSize));
 
   std::vector<int> result_sequential(left.size() + right.size());
-  mn::Merge(left, right, result_sequential);
+  veeam::Merge(left, right, result_sequential);
 
   assert(std::is_sorted(result_parallel.begin(), result_parallel.end()));
   assert(result_parallel == result_sequential);
