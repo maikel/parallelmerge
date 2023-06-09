@@ -3,7 +3,7 @@
 #include <tbb/parallel_for.h>
 #include <tbb/task_arena.h>
 
-namespace veeam {
+namespace mn {
 template <typename ReceiverId> class tbb_operation;
 
 class tbb_context {

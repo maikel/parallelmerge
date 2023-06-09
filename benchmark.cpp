@@ -22,7 +22,7 @@ constexpr std::size_t hardware_constructive_interference_size = 64;
 constexpr std::size_t hardware_destructive_interference_size = 64;
 #endif
 
-using veeam::Merge;
+using mn::Merge;
 
 int main() {
   int sequentially = 0;
@@ -84,7 +84,7 @@ int main() {
     }
     // exec::static_thread_pool context(nThreads);
     auto context =
-        nThreads > 0 ? veeam::tbb_context{nThreads} : veeam::tbb_context{};
+        nThreads > 0 ? mn::tbb_context{nThreads} : mn::tbb_context{};
     ex::scheduler auto scheduler = context.get_scheduler();
     for (int r = 0; r < repeat_n; ++r) {
       auto start = std::chrono::steady_clock::now();
